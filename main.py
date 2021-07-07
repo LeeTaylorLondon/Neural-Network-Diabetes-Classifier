@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
 
 
 def load_diabetes():
@@ -39,6 +40,15 @@ def standardize(df):
     df = df_scale
     print(df.describe().loc[['mean', 'std', 'max'],].round(2).abs())
     return df
+
+def split_data(df):
+    # Splits data into x,y inputs and labels
+    x = df.loc[:,df.columns != 'Outcome']
+    y = df.loc[:,'Outcome']
+    x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2)
+    x_train, x_val, y_train, y_val = train_test_split(x_train, y_train,
+                                                      test_size=0.2)
+    return x_train, x_test, x_val, y_train, y_test, y_val
 
 
 if __name__ == '__main__':
