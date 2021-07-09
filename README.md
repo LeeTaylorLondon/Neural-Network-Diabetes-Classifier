@@ -13,6 +13,7 @@ and training examples.
 * Pip install h5py (built with 3.1.0)
 * Pip install tensorflow (built with 2.5.0)
 * Pip install numpy (built with 1.19.5)
+* Download data from https://www.kaggle.com/uciml/pima-indians-diabetes-database and place in the same dir as main.py
 
 ## Usage
 Before running any python files please make sure you have completed ALL above installation steps.
