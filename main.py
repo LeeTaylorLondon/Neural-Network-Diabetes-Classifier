@@ -3,6 +3,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+
+np.random.seed(1)
 
 
 def load_diabetes():
@@ -46,9 +51,18 @@ def split_data(df):
     x = df.loc[:,df.columns != 'Outcome']
     y = df.loc[:,'Outcome']
     x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2)
-    x_train, x_val, y_train, y_val = train_test_split(x_train, y_train,
-                                                      test_size=0.2)
-    return x_train, x_test, x_val, y_train, y_test, y_val
+    return x_train, x_test, y_train, y_test
+
+def build_model():
+    model = Sequential()
+    model.add(Dense(32, activation='relu', input_dim=8))
+    model.add(Dense(16, activation='relu', input_dim=8))
+    model.add(Dense(1, activation='sigmoid')) # sigmoid used to output true or false
+    model.compile(optimizer='adam',
+                  loss='binary_crossentropy',
+                  metrics=['accuracy'])
+    model.summary()
+    return model
 
 
 if __name__ == '__main__':
@@ -56,3 +70,19 @@ if __name__ == '__main__':
     df = replace_0(df)
     df = replace_mean(df)
     df = standardize(df)
+    # load data
+    x_train, x_test, y_train, y_test = split_data(df)
+    # debug
+    # datas = [x_train, x_test, y_train, y_test]
+    # for _ in datas: print(_.shape)
+    # build and fit model
+    model = build_model()
+    model.fit(x_train, y_train, epochs=200, batch_size=8)
+    # evaulate and test model
+    scores = model.evaluate(x_train, y_train)
+    train_acc = "Training accuracy %.2f%%" % (scores[1]*100)
+    scores = model.evaluate(x_test, y_test)
+    test_acc = "Testing Accuracy: %.2f%%" % (scores[1] * 100)
+    # finally print train and testing accuracy
+    print(f"{train_acc} - {test_acc}")
+
